@@ -1,22 +1,32 @@
-// SPDX-License-Identifier: MIT
+
+// SPDX-LICENCE-IDENTIFIER:MIT 
  pragma solidity 0.8.18; // cats are cool 
    
    contract LabRegistry {
-
-    // A CONTRACT RECORDING AND RETRIEVING LAB REPORTS 
     
-    mapping (uint256 => string) public labReports; 
+    // A CONTRACT FORRECORDING AND RETRIEVING LAB REPORTS[DATA]
 
-    // RECORDING PROCESS [READ AND UPDATE ]
+    struct labReports { 
+        string results;
+        string technician;
+        uint256 timestamp;
+    }
 
-     function addfunction(uint256 _id, string memory _results) public {
-       labReports[_id] = _results;
-     }
-
-     // RETRIEVING PROCESS
-
-     function getreports(uint256 _id) public view returns (string memory) {
-        return labReports [_id];
-     }
+     mapping(uint256 => labReports) public labReport;
+         
+ // RECORDING DATA
+   
+   function addfunction (uint256 _id, string memory _results, string memory _technician) public{
+    labReport[_id] = labReports( _results,_technician,block.timestamp);
    }
+
+   //RETRIEVING FUNCTION
+
+    function getreports(uint256_id )public view returns (labReports memory){
+        return labReport[_id];
+    }
+    
+   }
+
+   
    
