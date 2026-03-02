@@ -1,24 +1,17 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.18;
 
 import {Test} from "forge-std/Test.sol";
-import {Counter} from "../src/Counter.sol";
+import {LabRegistry} from "../contracts/LabRegistry.sol";
 
-contract CounterTest is Test {
-    Counter public counter;
+contract LabRegistryTest is Test {
+    LabRegistry public registry;
 
     function setUp() public {
-        counter = new Counter();
-        counter.setNumber(0);
+        registry = new LabRegistry();
     }
 
-    function test_Increment() public {
-        counter.increment();
-        assertEq(counter.number(), 1);
-    }
-
-    function testFuzz_SetNumber(uint256 x) public {
-        counter.setNumber(x);
-        assertEq(counter.number(), x);
+    function test_RegistryExists() public {
+        assertEq(address(registry) != address(0), true);
     }
 }
