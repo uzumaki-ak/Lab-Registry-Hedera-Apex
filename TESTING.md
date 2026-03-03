@@ -52,3 +52,13 @@ The core data architecture has been verified. We have successfully transitioned 
 - **Optimization:** V2 (Structs) outperformed V1 (Strings) in gas efficiency.
 - **Reliability:** Data persistence confirmed across mapping lookups.
 - **Integrity:** Automated time-anchoring via `block.timestamp` is operational.
+
+## V3 Security Architecture Overview
+The goal of Version 3 was to move from a "Static" contract to a Proxy-Compatible Blueprint ready for Factory deployment.
+
+The Shield: We transitioned to OwnableUpgradeable to ensure that even when the contract is cloned for different hospitals, each hospital retains its own private "Admin".
+
+The Privacy Gate: We implemented a custom AccessDenied error to save gas while strictly enforcing medical confidentiality.
+
+Foundry Integration: The project was successfully ported to a local development environment, ensuring that (Smart Contracts) and  (AI Agent) have a shared ABI and Bytecode for integration.
+
