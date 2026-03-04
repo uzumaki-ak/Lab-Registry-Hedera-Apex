@@ -8,7 +8,7 @@ contract LabRegistryTest is Test {
     LabRegistry public registry;
 
     function setUp() public {
-        registry = new LabRegistry();
+        registry = new LabRegistry(address(this));
     }
 
     function test_RegistryExists() public {
