@@ -113,3 +113,10 @@ Action: Live Transcription Test
 ID 201: Success
 
 Status: V3.1 Production Oracle Verified
+
+
+### Project Structure Update (V3.1 -> V4):
+
+Metadata Migration: All ABIs, flattened source files, and deployment receipts have been moved to the /metadata root folder.
+
+Standardization: All future versions (V4 and V5) will store their artifacts here to ensure the AI Agent has a single source of truth.

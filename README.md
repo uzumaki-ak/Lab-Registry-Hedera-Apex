@@ -28,7 +28,9 @@ Lab Registry is a trust-layer built on **Hedera**, providing an immutable audit 
 - [x] **V3:** Access Control & AI Handshake (Security Layer) 
 - [ ] **V4:** HBAR Monetization & Audit Trails  <--- **CURRENTLY HERE**
 - [ ] **V5:** Factory Pattern (Privacy at Scale)
-- 
+-
+
+## (simple update)
 
 ### Smart Contract Architecture Note (March 2026)
 Current Version: V3.1 (Standard Architecture)
