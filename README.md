@@ -41,3 +41,14 @@ We have transitioned from the Initializable Proxy pattern to a Standard Deployme
 
 Note: The previous V3_Experimental_Proxy remains in the codebase for audit purposes but is currently deprecated in favor of the Standard V3.1 "Oracle".
 (feat(blockchain): final production deployment of V3.1 Standard Architecture)
+
+## 🔄 Architectural Note: Transition from Proxy to Standard Implementation
+Decision: Deprecated the Initializable Proxy pattern in favor of the V4 "Hardened Master" Standard Implementation.
+
+Rationale: > * State Collision Risk: Proxies require strict storage gap management. In a rapid development cycle (V4.0 to V4.4), the risk of "Storage Collision" between the proxy and the logic contract was high, which could have corrupted patient medical data.
+
+AI Agent Integration: Standard contracts provide a direct, immutable ABI. This ensures Uzumaki's AI Agent has a 100% reliable entry point for the addReport function without the overhead of delegate calls.
+
+Gas Efficiency: By removing the proxy middleman, we reduced the gas cost for every HBAR-anchored report, making the lab more economically viable on the Hedera EVM.
+
+Note: The V5 Factory will achieve scalability by deploying "Clones" of this hardened V4 logic, rather than utilizing upgradeable proxies.

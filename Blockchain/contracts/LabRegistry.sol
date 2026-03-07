@@ -1,39 +1,16 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;  // LabRegistry V3.1
-
+pragma solidity 0.8.23;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract LabRegistry is Ownable {
-    struct LabReport {
-        string results;
-        string technician;
-        uint256 timestamp;
-        address patientAddress;
-    }
-
+    struct LabReport { string results; string tech; uint256 time; address patient; }
     mapping(uint256 => LabReport) private labReports;
-    error AccessDenied();
+    event ReportAnchored(uint256 id, string tech, uint256 time);
 
-    event ReportAnchored(uint256 indexed id, string technician, uint256 timestamp);
+    constructor(address _owner) Ownable(_owner) {}
 
-    // Standard constructor sets YOU as owner immediately
-    constructor(address _initialOwner) Ownable(_initialOwner) {}
-
-    function addReport(uint256 _id, string memory _results, string memory _technician, address _patient) public onlyOwner {
-        labReports[_id] = LabReport({
-            results: _results,
-            technician: _technician,
-            timestamp: block.timestamp,
-            patientAddress: _patient
-        });
-        emit ReportAnchored(_id, _technician, block.timestamp);
-    }
-
-    function getReport(uint256 _id) public view returns (LabReport memory) {
-        LabReport memory report = labReports[_id];
-        if (msg.sender != owner() && msg.sender != report.patientAddress) {
-            revert AccessDenied();
-        }
-        return report;
+    function addReport(uint256 _id, string memory _res, string memory _tech, address _pat) public onlyOwner {
+        labReports[_id] = LabReport(_res, _tech, block.timestamp, _pat);
+        emit ReportAnchored(_id, _tech, block.timestamp);
     }
 }
