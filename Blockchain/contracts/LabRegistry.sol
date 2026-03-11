@@ -1,30 +1,26 @@
-/// SPDX-License-Identifier: MIT
-pragma solidity 0.8.23; // V4.5
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.23;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
- * @title LabRegistry V4.5 
- * @dev Integrates RBAC with HTS-Gating for secure, autonomous AI agent interactions.
+ * @title LabRegistry V4.6 - The Agentic Sovereign Protocol
+ * @author Crimson Ox
+ * @notice Verified for Hedera Apex 2026. 
+ * @dev Uses HTS-EVM compatibility for real-time token gating.
  */
-
-// Interface for Hedera Token Service (HTS) Precompiles
-interface IHederaTokenService {
-    function balanceOf(address account, address token) external returns (uint256);
-}
-
 contract LabRegistry is AccessControl, Pausable {
     // Role Definitions
     bytes32 public constant FACTORY_ADMIN_ROLE = keccak256("FACTORY_ADMIN_ROLE");
     bytes32 public constant LAB_DIRECTOR_ROLE = keccak256("LAB_DIRECTOR_ROLE");
 
-    // HTS Precompile address on Hedera
-    address constant HTS_PRECOMPILE_ADDRESS = address(0x167);
-    address public agentPermissionToken; // The HTS Token ID for the Agent's "Badge"
-
-    uint256 public anchorFee = 1e8; // Default: 1 HBAR
+    // HTS Configuration
+    address public agentPermissionToken; // The 0x Address of your Badge Token
+    uint256 public anchorFee = 1e8;      // 1 HBAR (100,000,000 tinybars)
     bool public automationEnabled; 
+    
     mapping(address => bool) public authorizedAgents; 
 
     struct LabReport {
@@ -40,14 +36,14 @@ contract LabRegistry is AccessControl, Pausable {
     event ReportAnchored(uint256 indexed id, address indexed patient, string tech, uint256 time);
     event FeeUpdated(uint256 newFee);
     event AgentStatusChanged(address indexed agent, bool status);
-    event TokenRequirementUpdated(address newToken);
+    event TokenRequirementUpdated(address indexed newToken);
 
     constructor(address _factoryAdmin, address _localDirector, address _tokenID) {
-        // Master Admin Setup (Factory Owner/Recovery)
+        // Master Admin Setup
         _grantRole(DEFAULT_ADMIN_ROLE, _factoryAdmin);
         _grantRole(FACTORY_ADMIN_ROLE, _factoryAdmin);
         
-        // Operational Setup (Lab Owner/User)
+        // Operational Setup
         _grantRole(LAB_DIRECTOR_ROLE, _localDirector);
 
         // Factory Admin manages the Director role
@@ -56,7 +52,7 @@ contract LabRegistry is AccessControl, Pausable {
         agentPermissionToken = _tokenID; 
     }
 
-    // --- EMERGENCY OVERRIDES (Both Admin & Director) ---
+    // --- EMERGENCY OVERRIDES ---
 
     function pause() external {
         require(hasRole(FACTORY_ADMIN_ROLE, msg.sender) || hasRole(LAB_DIRECTOR_ROLE, msg.sender), "Unauthorized");
@@ -68,40 +64,41 @@ contract LabRegistry is AccessControl, Pausable {
         _unpause();
     }
 
-    // --- ADMINISTRATIVE CONTROLS (Restricted by Role) ---
+    // --- ADMINISTRATIVE CONTROLS ---
 
     function setAgentToken(address _newToken) external {
-        require(hasRole(FACTORY_ADMIN_ROLE, msg.sender), "Only Factory Admin can update Token ID");
+        require(hasRole(FACTORY_ADMIN_ROLE, msg.sender), "Only Factory Admin");
         agentPermissionToken = _newToken;
         emit TokenRequirementUpdated(_newToken);
     }
 
     function setAnchorFee(uint256 _newFee) external {
-        require(hasRole(LAB_DIRECTOR_ROLE, msg.sender), "Only Director can set fees");
+        require(hasRole(LAB_DIRECTOR_ROLE, msg.sender), "Only Director");
         anchorFee = _newFee;
         emit FeeUpdated(_newFee);
     }
 
     function setAutomation(bool _status) external {
-        require(hasRole(LAB_DIRECTOR_ROLE, msg.sender), "Only Director can toggle AI");
+        require(hasRole(LAB_DIRECTOR_ROLE, msg.sender), "Only Director");
         automationEnabled = _status;
     }
 
     function setAgentStatus(address _agent, bool _status) external {
-        require(hasRole(LAB_DIRECTOR_ROLE, msg.sender), "Only Director can manage agents");
+        require(hasRole(LAB_DIRECTOR_ROLE, msg.sender), "Only Director");
         authorizedAgents[_agent] = _status;
         emit AgentStatusChanged(_agent, _status);
     }
 
-    // --- CORE LOGIC (Hybrid Agentic Protocol with HTS-Gating) ---
+    // --- CORE LOGIC (HTS-Gated Agentic Anchor) ---
 
     function addReport(uint256 _id, string memory _res, string memory _tech, address _pat) 
         public payable whenNotPaused 
     {
         bool isDirector = hasRole(LAB_DIRECTOR_ROLE, msg.sender);
         
-        // V4.5 Logic: Check for Mapping Authorization AND HTS Token Ownership
-        uint256 agentBalance = IHederaTokenService(HTS_PRECOMPILE_ADDRESS).balanceOf(msg.sender, agentPermissionToken);
+        // HTS-EVM Check: Queries the token balance via standard ERC20 interface
+        uint256 agentBalance = IERC20(agentPermissionToken).balanceOf(msg.sender);
+        
         bool isAuthAgent = (automationEnabled && authorizedAgents[msg.sender] && agentBalance > 0);
         
         if (!isDirector && !isAuthAgent) revert("Unauthorized: Missing Role or HTS Token");
@@ -112,7 +109,7 @@ contract LabRegistry is AccessControl, Pausable {
     }
 
     function withdraw() external whenNotPaused {
-        require(hasRole(LAB_DIRECTOR_ROLE, msg.sender), "Only Director can withdraw");
+        require(hasRole(LAB_DIRECTOR_ROLE, msg.sender), "Only Director");
         payable(msg.sender).transfer(address(this).balance);
     }
 
@@ -122,4 +119,7 @@ contract LabRegistry is AccessControl, Pausable {
         if (!hasRole(LAB_DIRECTOR_ROLE, msg.sender) && msg.sender != r.patientAddress) revert("Access Denied");
         return r;
     }
+
+    // Fallback to receive HBAR
+    receive() external payable {}
 }
