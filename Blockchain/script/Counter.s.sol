@@ -9,7 +9,7 @@ contract LabRegistryScript is Script {
         vm.startBroadcast();
         new LabRegistry(
     0x569f7b65538786c858329b0fE855afcBdf5572E0, 
-    0x569f7b65538786c858329b0fE855afcBdf5572E0  
+    0x569f7b65538786c858329b0fE855afcBdf5572E0,0x00000000000000000000000000000000007c30cf  
 );
         vm.stopBroadcast();
     }
