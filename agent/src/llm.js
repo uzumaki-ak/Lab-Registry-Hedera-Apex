@@ -1,9 +1,9 @@
-const DEFAULT_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const DEFAULT_MODEL = process.env.EURON_MODEL || "gemini-2.5-flash";
 
 async function summarizeLabResult({ hashedPatientId, testName, resultValue }) {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.EURON_API_KEY;
   if (!apiKey) {
-    throw new Error("GEMINI_API_KEY must be set in your .env");
+    throw new Error("EURON_API_KEY must be set in your .env");
   }
 
   const prompt = `
@@ -22,31 +22,36 @@ Input:
 `;
 
   const body = {
-    contents: [
+    model: DEFAULT_MODEL,
+    messages: [
       {
-        parts: [{ text: prompt }],
+        role: "user",
+        content: prompt,
       },
     ],
+    stream: false,
   };
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${DEFAULT_MODEL}:generateContent?key=${apiKey}`;
+  const url = "https://api.euron.one/api/v1/euri/chat/completions";
 
   const res = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify(body),
   });
 
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Gemini API error: ${res.status} ${text}`);
+    throw new Error(`Euron API error: ${res.status} ${text}`);
   }
 
   const data = await res.json();
   const text =
-    data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||
+    data.choices?.[0]?.message?.content?.trim() ||
+    data.choices?.[0]?.delta?.content?.trim() ||
     "AI Analysis: No summary generated";
 
   return text;
