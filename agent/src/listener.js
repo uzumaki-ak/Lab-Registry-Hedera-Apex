@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { anchorReport } = require("./index");
+const { summarizeLabResult } = require("./llm");
 
 function hashValue(value) {
   return crypto.createHash("sha256").update(String(value)).digest("hex");
@@ -28,13 +29,11 @@ function parseCsvLine(line) {
 function scrubLabRecord(record) {
   const hashedPatientId = hashValue(record.patientName || "unknown");
 
-  const summary = `AI Analysis Placeholder for ${record.testName}: ${record.resultValue}`;
-
   return {
     id: record.id,
-    resultSummary: summary,
-    technicianName: process.env.LAB_REGISTRY_AGENT_NAME || "Uzumaki-AI-Agent",
-    patientEvmAddress: record.patientAddress,
+    patientAddress: record.patientAddress,
+    testName: record.testName,
+    resultValue: record.resultValue,
     hashedPatientId,
   };
 }
@@ -48,11 +47,18 @@ async function processCsvFile(filePath) {
       const parsed = parseCsvLine(line);
       const scrubbed = scrubLabRecord(parsed);
 
+      const aiSummary = await summarizeLabResult({
+        hashedPatientId: scrubbed.hashedPatientId,
+        testName: scrubbed.testName,
+        resultValue: scrubbed.resultValue,
+      });
+
       await anchorReport({
         id: scrubbed.id,
-        resultSummary: scrubbed.resultSummary,
-        technicianName: scrubbed.technicianName,
-        patientEvmAddress: scrubbed.patientEvmAddress,
+        resultSummary: aiSummary,
+        technicianName:
+          process.env.LAB_REGISTRY_AGENT_NAME || "Uzumaki-AI-Agent",
+        patientEvmAddress: scrubbed.patientAddress,
       });
     } catch (err) {
       console.error(`Failed to process line "${line}":`, err.message);
