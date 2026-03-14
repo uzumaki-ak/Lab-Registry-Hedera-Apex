@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { fetchLabAudit, hederaTxUrl, type LabAuditRow } from "../api";
+import { fetchLabAudit, hederaTxUrl, verifyOnChainReport, type LabAuditRow } from "../api";
 import type { User } from "./Login";
+
+interface Toast {
+  id: number;
+  message: string;
+  type: "info" | "success" | "error";
+}
 
 interface AuditTrailProps {
   user: User;
@@ -9,8 +15,18 @@ interface AuditTrailProps {
 export const AuditTrail: React.FC<AuditTrailProps> = ({ user }) => {
   const [rows, setRows] = useState<LabAuditRow[]>([]);
   const [loading, setLoading] = useState(false);
+  const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [toasts, setToasts] = useState<Toast[]>([]);
+
+  const pushToast = (message: string, type: "info" | "success" | "error") => {
+    const id = Date.now();
+    setToasts((prev) => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 4000);
+  };
 
   const load = async () => {
     try {
@@ -23,6 +39,21 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ user }) => {
       setError(String(err.message || err));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleVerify = async (reportId: string) => {
+    try {
+      setVerifying(true);
+      pushToast("Signing verification on Hedera...", "info");
+      await verifyOnChainReport(Number(reportId));
+      pushToast("Report successfully verified", "success");
+      await load();
+    } catch (err: any) {
+      console.error(err);
+      pushToast(err.message || "Failed to verify report", "error");
+    } finally {
+      setVerifying(false);
     }
   };
 
@@ -51,6 +82,15 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ user }) => {
 
       <div className="grid-two" style={{ gridTemplateColumns: selectedId ? "1fr 380px" : "1fr", transition: "all 0.3s" }}>
         <div className="card" style={{ padding: "1rem" }}>
+          {toasts.length > 0 && (
+            <div className="toast-list">
+              {toasts.map((t) => (
+                <div key={t.id} className={`toast ${t.type}`}>
+                  {t.message}
+                </div>
+              ))}
+            </div>
+          )}
           <div style={{ overflowX: "auto" }}>
             <table className="table">
               <thead>
@@ -80,13 +120,14 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ user }) => {
                     <td>
                       <span
                         className={
-                          (r.status ?? "").toLowerCase().includes("success") ||
-                          r.status === "AUTHENTICATED"
+                          r.status === "VERIFIED" || r.status === "SUCCESS"
                             ? "pill pill-success"
-                            : r.status === "FAILED" ? "pill pill-error" : "pill pill-neutral"
+                            : r.status === "PENDING"
+                            ? "pill pill-neutral"
+                            : "pill pill-error"
                         }
                       >
-                        {r.status ?? "—"}
+                        {r.status ?? "PENDING"}
                       </span>
                     </td>
                     <td className="small" style={{ color: "var(--text-sub)" }}>
@@ -154,6 +195,34 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ user }) => {
                   </div>
                 )}
                 <div>
+                  <dt style={{ color: "var(--text-sub)", fontSize: "0.8rem", marginBottom: "0.2rem", fontWeight: 600, textTransform: "uppercase" }}>Verification Status</dt>
+                  <dd style={{ margin: 0 }}>
+                    <span className={selected.status === "VERIFIED" ? "pill pill-success" : "pill pill-neutral"}>
+                      {selected.status ?? "PENDING"}
+                    </span>
+                    {selected.verified_by && (
+                      <div className="small" style={{ marginTop: "0.25rem", color: "var(--text-sub)" }}>
+                        Signed by: {selected.verified_by}
+                      </div>
+                    )}
+                  </dd>
+                </div>
+                
+                {/* Admin Verification Button */}
+                {user.role === "admin" && selected.status !== "VERIFIED" && (
+                  <div style={{ marginTop: "1rem" }}>
+                    <button 
+                      className="primary-btn" 
+                      style={{ width: "100%", background: "var(--btn-primary)" }}
+                      onClick={() => handleVerify(selected.report_id!)}
+                      disabled={verifying}
+                    >
+                      {verifying ? "Executing Tx..." : "Verify & Sign on Ledger"}
+                    </button>
+                  </div>
+                )}
+
+                <div>
                   <dt style={{ color: "var(--text-sub)", fontSize: "0.8rem", marginBottom: "0.2rem", fontWeight: 600, textTransform: "uppercase" }}>Hedera Anchor Tx</dt>
                   <dd className="mono small" style={{ margin: 0, wordBreak: "break-all" }}>
                     {selected.tx_id ?? "—"}
@@ -180,10 +249,10 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ user }) => {
                       href={hederaTxUrl(selected.tx_id)!}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="primary-btn"
-                      style={{ display: "block", textAlign: "center", textDecoration: "none" }}
+                      className="secondary-btn"
+                      style={{ display: "block", textAlign: "center", textDecoration: "none", fontSize: "0.8rem" }}
                     >
-                      Verify Ledger Anchor →
+                      View on HashScan ↗
                     </a>
                   </div>
                 )}

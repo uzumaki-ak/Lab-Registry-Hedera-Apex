@@ -69,5 +69,26 @@ async function anchorReport({
   };
 }
 
-module.exports = { anchorReport };
+async function verifyReport(id) {
+  const client = createClientFromEnv();
+  const contractId = process.env.LAB_REGISTRY_CONTRACT_ID;
+  if (!contractId) throw new Error("LAB_REGISTRY_CONTRACT_ID must be set");
+
+  const tx = await new ContractExecuteTransaction()
+    .setContractId(contractId)
+    .setGas(100000)
+    .setFunction("verifyReport", new ContractFunctionParameters().addUint256(id))
+    .freezeWith(client);
+
+  const signTx = await tx.signWithOperator(client);
+  const response = await signTx.execute(client);
+  const receipt = await response.getReceipt(client);
+
+  return {
+    status: receipt.status.toString(),
+    transactionId: response.transactionId.toString(),
+  };
+}
+
+module.exports = { anchorReport, verifyReport };
 

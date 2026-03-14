@@ -90,6 +90,33 @@ app.post("/api/execute-report", async (req, res) => {
   }
 });
 
+app.post("/api/verify-report", async (req, res) => {
+  try {
+    const { id } = req.body;
+    if (!id) return res.status(400).json({ error: "Missing report ID" });
+
+    const { verifyReport } = require("./index");
+    const result = await verifyReport(id);
+
+    // Update Supabase status to VERIFIED
+    const { createClient } = require("@supabase/supabase-client");
+    const supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_ANON_KEY
+    );
+
+    await supabase
+      .from("lab_audit")
+      .update({ status: "VERIFIED", verified_by: process.env.HEDERA_OPERATOR_ID })
+      .eq("report_id", String(id));
+
+    res.json({ success: true, hedera: result });
+  } catch (err) {
+    console.error("Verification error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.post("/api/chat", async (req, res) => {
   const { query, labContext } = req.body || {};
   if (!query || typeof query !== "string") {

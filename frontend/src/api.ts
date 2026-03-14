@@ -64,6 +64,7 @@ export interface LabAuditRow {
   ipfs_cid: string | null;
   tx_id: string | null;
   status: string | null;
+  verified_by: string | null;
   created_at: string;
 }
 
@@ -106,4 +107,15 @@ export async function insertLabAudit(row: Partial<LabAuditRow>) {
   const { error } = await supabase.from("lab_audit").insert(row);
   if (error) throw new Error(error.message);
 }
-
+export async function verifyOnChainReport(id: number) {
+  const response = await fetch(`${AGENT_API_URL}/api/verify-report`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id }),
+  });
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "Failed to verify report");
+  }
+  return response.json();
+}
