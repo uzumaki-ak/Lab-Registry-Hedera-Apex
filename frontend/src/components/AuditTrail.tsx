@@ -120,14 +120,13 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ user }) => {
                     <td>
                       <span
                         className={
-                          r.status === "VERIFIED" || r.status === "SUCCESS"
+                          (r.verified_by || r.status === "VERIFIED")
                             ? "pill pill-success"
-                            : r.status === "PENDING"
-                            ? "pill pill-neutral"
-                            : "pill pill-error"
+                            : "pill pill-neutral"
                         }
+                        style={{ border: (r.verified_by || r.status === "VERIFIED") ? "1px solid #10b981" : "1px solid #64748b" }}
                       >
-                        {r.status ?? "PENDING"}
+                        {(r.verified_by || r.status === "VERIFIED") ? "FULLY VERIFIED" : "AGENT SIGNED"}
                       </span>
                     </td>
                     <td className="small" style={{ color: "var(--text-sub)" }}>
@@ -195,16 +194,18 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ user }) => {
                   </div>
                 )}
                 <div>
-                  <dt style={{ color: "var(--text-sub)", fontSize: "0.8rem", marginBottom: "0.2rem", fontWeight: 600, textTransform: "uppercase" }}>Verification Status</dt>
-                  <dd style={{ margin: 0 }}>
-                    <span className={selected.status === "VERIFIED" ? "pill pill-success" : "pill pill-neutral"}>
-                      {selected.status ?? "PENDING"}
-                    </span>
-                    {selected.verified_by && (
-                      <div className="small" style={{ marginTop: "0.25rem", color: "var(--text-sub)" }}>
-                        Signed by: {selected.verified_by}
-                      </div>
-                    )}
+                  <dt style={{ color: "var(--text-sub)", fontSize: "0.8rem", marginBottom: "0.5rem", fontWeight: 600, textTransform: "uppercase" }}>Multi-Sig Validation</dt>
+                  <dd style={{ margin: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <span className="pill pill-success" style={{ fontSize: "0.7rem", padding: "2px 8px" }}>SIGNER 1</span>
+                      <span style={{ fontSize: "0.9rem", color: "var(--text-main)" }}>Agent: Uzumaki-AI</span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <span className={(selected.verified_by || selected.status === "VERIFIED") ? "pill pill-success" : "pill pill-neutral"} style={{ fontSize: "0.7rem", padding: "2px 8px" }}>SIGNER 2</span>
+                      <span style={{ fontSize: "0.9rem", color: (selected.verified_by || selected.status === "VERIFIED") ? "var(--text-main)" : "var(--text-sub)" }}>
+                        Medical Officer: {(selected.verified_by || selected.status === "VERIFIED") ? (selected.verified_by || "Verified") : "Pending Review..."}
+                      </span>
+                    </div>
                   </dd>
                 </div>
                 

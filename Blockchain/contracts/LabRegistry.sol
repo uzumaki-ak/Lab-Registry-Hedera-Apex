@@ -12,11 +12,12 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
  */
 contract LabRegistry is AccessControl, Pausable {
     bytes32 public constant FACTORY_ADMIN_ROLE = keccak256("FACTORY_ADMIN_ROLE");
+    bytes32 public constant LAB_DIRECTOR_ROLE = keccak256("LAB_DIRECTOR_ROLE");
     enum Status { PENDING, VERIFIED, DISPUTED }
     bytes32 public constant MEDICAL_OFFICER_ROLE = keccak256("MEDICAL_OFFICER_ROLE");
 
     address public agentPermissionToken;
-    uint256 public anchorFee = 1 ether; 
+    uint256 public anchorFee = 0; 
     bool public automationEnabled; 
     
     mapping(address => bool) public authorizedAgents; 
@@ -41,7 +42,7 @@ contract LabRegistry is AccessControl, Pausable {
         _grantRole(DEFAULT_ADMIN_ROLE, _factoryAdmin);
         _grantRole(FACTORY_ADMIN_ROLE, _factoryAdmin);
         _grantRole(LAB_DIRECTOR_ROLE, _localDirector);
-        _grantRole(MEDICAL_OFFICER_ROLE, _localDirector);
+        _grantRole(MEDICAL_OFFICER_ROLE, _localDirector); // New: Enable verification logic for director
 
         // Factory Admin (Acc 1) manages the Director role (Acc 2)
         _setRoleAdmin(LAB_DIRECTOR_ROLE, FACTORY_ADMIN_ROLE);

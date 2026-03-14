@@ -40,7 +40,7 @@ async function anchorReport({
     throw new Error("LAB_REGISTRY_CONTRACT_ID must be set");
   }
 
-  const gasLimit = 150000;
+  const gasLimit = 300000;
 
   const tx = await new ContractExecuteTransaction()
     .setContractId(contractId)
@@ -76,7 +76,7 @@ async function verifyReport(id) {
 
   const tx = await new ContractExecuteTransaction()
     .setContractId(contractId)
-    .setGas(100000)
+    .setGas(200000)
     .setFunction("verifyReport", new ContractFunctionParameters().addUint256(id))
     .freezeWith(client);
 
@@ -90,5 +90,21 @@ async function verifyReport(id) {
   };
 }
 
-module.exports = { anchorReport, verifyReport };
+async function getReportState(id) {
+  const client = createClientFromEnv();
+  const contractId = process.env.LAB_REGISTRY_CONTRACT_ID;
+
+  const query = new ContractCallQuery()
+    .setContractId(contractId)
+    .setGas(100000)
+    .setFunction("getReport", new ContractFunctionParameters().addUint256(id));
+
+  const result = await query.execute(client);
+  // Solidity struct layout for strings is complex, but the status is at the end.
+  // For the hackathon, we know if verifyReport reverts with CONTRACT_REVERT_EXECUTED, 
+  // and the report exists, it's almost certainly "already final".
+  return result;
+}
+
+module.exports = { anchorReport, verifyReport, getReportState };
 

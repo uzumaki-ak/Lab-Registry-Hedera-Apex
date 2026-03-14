@@ -138,7 +138,7 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
  
- # --- BLOCKCHAIN SHIELD ---
+# --- BLOCKCHAIN SHIELD ---
 out/
 cache/
 broadcast/
@@ -147,3 +147,13 @@ artifacts/
 *.pem
 private.key
 .env
+
+# Diagnostic Scripts & Temporary Migrations
+agent/check-*.js
+agent/fix-*.js
+agent/hash-check.js
+agent/manual-verify.js
+agent/sync-db.js
+agent/sanitize-db.js
+agent/debug-account.js
+supabase/add_*.sql

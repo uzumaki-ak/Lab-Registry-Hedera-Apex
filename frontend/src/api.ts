@@ -10,7 +10,7 @@ const MIRROR_NODE_URL =
 
 const LAB_REGISTRY_CONTRACT_ID =
   (import.meta.env.VITE_LAB_REGISTRY_CONTRACT_ID as string | undefined) ||
-  "0.0.5366433";
+  "0.0.8221212";
 
 export async function executeAgent(
   payload: LabReportInput

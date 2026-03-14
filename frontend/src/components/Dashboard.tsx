@@ -106,12 +106,13 @@ export const Dashboard: React.FC = () => {
                   <td>
                     <span
                       className={
-                        (r.status ?? "").toLowerCase().includes("success") || r.status === "AUTHENTICATED"
+                        (r.verified_by || r.status === "VERIFIED")
                           ? "pill pill-success"
-                          : "pill pill-error"
+                          : "pill pill-neutral"
                       }
+                      style={{ border: (r.verified_by || r.status === "VERIFIED") ? "1px solid #10b981" : "1px solid #64748b" }}
                     >
-                      {r.status ?? "—"}
+                      {(r.verified_by || r.status === "VERIFIED") ? "FULLY VERIFIED" : "AGENT SIGNED"}
                     </span>
                   </td>
                   <td>

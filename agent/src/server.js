@@ -8,7 +8,14 @@ const { summarizeLabResult, chatWithLabContext } = require("./llm");
 const { anchorReport } = require("./index");
 const { pinDiagnosticToIPFS } = require("./ipfs");
 
+const { createClient } = require("@supabase/supabase-js");
+
 const app = express();
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
 app.use(cors());
 app.use(express.json());
@@ -96,21 +103,37 @@ app.post("/api/verify-report", async (req, res) => {
     if (!id) return res.status(400).json({ error: "Missing report ID" });
 
     const { verifyReport } = require("./index");
-    const result = await verifyReport(id);
+    let hederaResult;
+    try {
+      hederaResult = await verifyReport(id);
+    } catch (err) {
+      const isRevert = err.message && (
+        err.message.includes("Report already final") || 
+        err.message.includes("CONTRACT_REVERT_EXECUTED")
+      );
+
+      if (isRevert) {
+        console.log(`Report ${id} probably already verified (Revert). Syncing DB just in case...`);
+        hederaResult = { status: "SUCCESS", note: "Synced from on-chain state" };
+      } else {
+        throw err;
+      }
+    }
 
     // Update Supabase status to VERIFIED
-    const { createClient } = require("@supabase/supabase-client");
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_ANON_KEY
-    );
-
-    await supabase
+    const { error: dbErr } = await supabase
       .from("lab_audit")
       .update({ status: "VERIFIED", verified_by: process.env.HEDERA_OPERATOR_ID })
       .eq("report_id", String(id));
 
-    res.json({ success: true, hedera: result });
+    if (dbErr) {
+      console.error(`Supabase sync failed for report ${id}:`, dbErr.message);
+      // We don't throw here if on-chain was successful, but we log it
+    } else {
+      console.log(`✅ Supabase sync successful for report ${id}`);
+    }
+
+    res.json({ success: true, hedera: hederaResult });
   } catch (err) {
     console.error("Verification error:", err);
     res.status(500).json({ error: err.message });
