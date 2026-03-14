@@ -62,6 +62,11 @@ async function anchorReport({
   console.log(
     `Anchor status for report ${id}: ${receipt.status.toString()}`
   );
+
+  return {
+    status: receipt.status.toString(),
+    transactionId: response.transactionId.toString(),
+  };
 }
 
 module.exports = { anchorReport };
