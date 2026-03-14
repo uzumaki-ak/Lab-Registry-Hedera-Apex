@@ -68,10 +68,8 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ user }) => {
                   <tr
                     key={r.id}
                     onClick={() => setSelectedId(r.id)}
-                    style={{ 
-                      cursor: "pointer", 
-                      background: selectedId === r.id ? "#eff6ff" : "transparent"
-                    }}
+                    className={selectedId === r.id ? "selected" : ""}
+                    style={{ cursor: "pointer" }}
                   >
                     <td>{r.report_id ?? "—"}</td>
                     <td style={{ fontWeight: 500, color: "var(--text-main)" }}>
@@ -91,7 +89,7 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ user }) => {
                         {r.status ?? "—"}
                       </span>
                     </td>
-                    <td className="small" style={{ color: "#64748b" }}>
+                    <td className="small" style={{ color: "var(--text-sub)" }}>
                       {r.created_at ? new Date(r.created_at).toLocaleString() : "—"}
                     </td>
                   </tr>
@@ -117,7 +115,7 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ user }) => {
                 <h2 style={{ margin: 0 }}>Report {selected.report_id}</h2>
                 <button
                   onClick={() => setSelectedId(null)}
-                  style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: "1.25rem", padding: "0 0.25rem" }}
+                  style={{ background: "none", border: "none", color: "var(--text-sub)", cursor: "pointer", fontSize: "1.25rem", padding: "0 0.25rem" }}
                   aria-label="Close"
                 >
                   &times;
@@ -133,7 +131,17 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ user }) => {
                 )}
                 <div>
                   <dt style={{ color: "var(--text-sub)", fontSize: "0.8rem", marginBottom: "0.2rem", fontWeight: 600, textTransform: "uppercase" }}>Diagnostic Summary</dt>
-                  <dd style={{ margin: 0, background: "var(--nav-hover)", padding: "0.75rem", borderRadius: "8px", border: "1px solid var(--border-color)", fontSize: "0.95rem", lineHeight: 1.5 }}>
+                  <dd style={{ 
+                    margin: 0, 
+                    background: "var(--nav-hover)", 
+                    padding: "0.75rem", 
+                    borderRadius: "8px", 
+                    border: "1px solid var(--border-color)", 
+                    fontSize: "0.95rem", 
+                    lineHeight: 1.5,
+                    wordBreak: "break-all",
+                    color: "var(--text-main)"
+                  }}>
                     {selected.ai_summary ?? "—"}
                   </dd>
                 </div>
