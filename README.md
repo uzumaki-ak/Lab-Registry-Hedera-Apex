@@ -19,7 +19,7 @@
 > [!IMPORTANT]
 > **Project URL:** [https://lab-registry-hedera-apex.vercel.app/]
 > **Technical Demo Video:** [YouTube/Loom Link here]
-> **Storage Layer:** [https://gateway.pinata.cloud/ipfs/QmPht6tBEVAk7Usz4XediZCJnnrCXxNWWYx3agCNX8zWR]
+> **Storage Layer:** [https://gateway.pinata.cloud/ipfs/QmPht6tBEVAk7Usz4XediZCJnnrCXxNWWYx3agCNX8zWRP]
 
 ---
 
@@ -89,14 +89,14 @@ The development of the Smart Lab Registry followed a rigorous, iterative audit l
 
 * **Objective:** Transition from centralized ownership to decentralized HTS-EVM Hybrid security.
 * **The Pivot:** Successfully shifted to **ERC20-parity bridge** for Token `0.0.8138959` after native precompile reverts.
-* **🔗 Full Audit Log:** [Evolution V4 Log](https://www.google.com/search?q=./development-logs/V4-V5/EVOLUTION_V4.md)
+* **🔗 Full Audit Log:** [Evolution V4 Log](./development-logs/V4-V5/EVOLUTION_V4.md)
 
 ### 🏛️ Phase 5: The "Clean State" Production (V5.0)
 
 * **Objective:** Deploy a pristine, "Zero-Cluster" infrastructure for judges.
 * **Innovation:** Triple-Lock Security System (HTS Gating + RBAC + Anti-Overwrite Shield).
 * **Status:** **ACTIVE / FINAL** at `0.0.8166906`
-* **🔗 Full Audit Log:** [Production V5 Log](https://www.google.com/search?q=./development-logs/V4-V5/PRODUCTION_V5.md)
+* **🔗 Full Audit Log:** * [Production V5 Log](./development-logs/V4-V5/PRODUCTION_V5.md)
 
 ---
 
