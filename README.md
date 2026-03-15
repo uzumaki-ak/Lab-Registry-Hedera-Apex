@@ -4,7 +4,7 @@
 
 **Track:** AI & Agents
 
-**Lead Architect:** Liasandeen Ikienu (Crimson_Ox)
+**Lead Architect:** Liasandeen Ikienu ([Crimson-Ox](https://github.com/Crimson-Ox))
 
 **Architecture:** HTS-EVM Hybrid | Sovereign RBAC | Dual-Signature Governance
 
@@ -17,9 +17,9 @@
 ## 🔗 Live Access & Media
 
 > [!IMPORTANT]
-> **Project URL:** [Production URL here after deployment]
+> **Project URL:** [https://lab-registry-hedera-apex.vercel.app/](https://lab-registry-hedera-apex.vercel.app/)
 > **Technical Demo Video:** [YouTube/Loom Link here]
-> **Storage Layer:** [Verified Pinata IPFS Gateway]
+> **Storage Layer:** [https://gateway.pinata.cloud/ipfs/QmPht6tBEVAk7Usz4XediZCJnnrCXxNWWYx3agCNX8zWR](https://www.google.com/search?q=https://gateway.pinata.cloud/ipfs/QmPht6tBEVAk7Usz4XediZCJnnrCXxNWWYx3agCNX8zWR)
 
 ---
 
@@ -37,9 +37,9 @@ The Smart Lab Registry is a multi-tier ecosystem designed for high-frequency med
 
 ### 1. The HTS-Gated Sovereign RBAC
 
-The backbone of the system is a custom **Role-Based Access Control (RBAC)** model that integrates directly with the **Hedera Token Service (HTS)**. To interact with the registry, the AI Agent must hold the **Sovereign Badge Token (0.0.8138959)**. This ensures that even whitelisted accounts cannot execute diagnostic anchors without the physical presence of the utility token in their vault.
+The backbone of the system is a custom **Role-Based Access Control (RBAC)** model that integrates directly with the **Hedera Token Service (HTS)**. To interact with the registry, the AI Agent must hold the **Sovereign Badge Token (0.0.8138959)**. This ensures that even whitelisted accounts cannot execute diagnostic anchors without the physical presence of the utility token in its vault.
 
-### 2. Dual-Signature Multi-Sig Validation 
+### 2. Dual-Signature Multi-Sig Validation
 
 To eliminate dependency on standalone AI interpretations, reports now undergo a two-stage verification:
 
@@ -58,14 +58,14 @@ Large-scale lab results are no longer stored on-chain to preserve gas. Instead:
 
 ## 💻 The Technical Stack: Enterprise-Grade Architecture
 
-| Layer                 | Technology                 | Function |
-|                   --- |                        --- |                                                         --- |
-| **Blockchain**        | **Hedera Network (aBFT)**  | Secure provenance and gas-efficient medical anchoring.      |
-| **Smart Contracts**   | **Solidity 0.8.23**        | Sovereign RBAC, HTS Gating, and Dual-Signature logic.       |
-| **AI/LLM**            | **OpenAI (Euron Model)**   | Clinical interpretation, PII scrubbing, and bulk analysis.  |
-| **Storage (Bulk)**    | **IPFS (via Pinata SDK)**  | Decentralized Merkle-Bridge for high-capacity medical data. |
-| **Frontend**          | **React 18 + TypeScript**  | Type-safe, high-performance diagnostic dashboard.           |
-| **Auth/Identity**     | **Supabase**               | Off-chain RBAC management and user session security.        |
+| Layer                  | Technology                 | Function                                                       |
+|                    --- |                        --- |                                                            --- |
+| **Blockchain**         | **Hedera Network (aBFT)**  | Secure provenance and gas-efficient medical anchoring.         |
+| **Smart Contracts**    | **Solidity 0.8.23**        | Sovereign RBAC, HTS Gating, and Dual-Signature logic.          |
+| **AI/LLM**             | **OpenAI (Euron Model)**   | Clinical interpretation, PII scrubbing, and bulk analysis.     |
+| **Storage (Bulk)**     | **IPFS (via Pinata SDK)**  | Decentralized Merkle-Bridge for high-capacity medical data.    |
+| **Frontend**           | **React 18 + TypeScript**  | Type-safe, high-performance diagnostic dashboard.              |
+| **Auth/Identity**      | **Supabase**               | Off-chain RBAC management and user session security.           |
 
 ---
 
@@ -89,31 +89,32 @@ The development of the Smart Lab Registry followed a rigorous, iterative audit l
 
 * **Objective:** Transition from centralized ownership to decentralized HTS-EVM Hybrid security.
 * **The Pivot:** Successfully shifted to **ERC20-parity bridge** for Token `0.0.8138959` after native precompile reverts.
-* **🔗 Full Audit Log:** [Evolution V4 Log](./development-logs/V4-V5/EVOLUTION_V4.md)
-)
+* **🔗 Full Audit Log:** [Evolution V4 Log](https://www.google.com/search?q=./development-logs/V4-V5/EVOLUTION_V4.md)
+
 ### 🏛️ Phase 5: The "Clean State" Production (V5.0)
 
 * **Objective:** Deploy a pristine, "Zero-Cluster" infrastructure for judges.
 * **Innovation:** Triple-Lock Security System (HTS Gating + RBAC + Anti-Overwrite Shield).
 * **Status:** **ACTIVE / FINAL** at `0.0.8166906`
-*  **🔗 Full Audit Log:** [Production V5 Log](./development-logs/V4-V5/PRODUCTION_V5.md)
+* **🔗 Full Audit Log:** [Production V5 Log](https://www.google.com/search?q=./development-logs/V4-V5/PRODUCTION_V5.md)
 
 ---
 
 ## 📊 Comprehensive Gas Evolution & "The Security Tax"
-
-| Operation              | V1 (Primitive) | V3.1 (Secured Proxy) | V5.0 (Final Hardened) |
-|                    --- |            --- |                  --- |                   --- |
-| **Deployment**         | 185,000        | 850,000              | **558,394**           |
-| **`addReport` (Warm)** | 23,893         | 32,440               | **137,902***          |
-| **`getReport`**        | 5,500          | 8,200                | **18,500**            |
+  
+| Operation                | V1 (Primitive)             | V3.1 (Secured Proxy) | V5.0 (Final Hardened) |
+|                      --- |                        --- |                  --- |                   --- |
+| **Deployment**           | 185,000                    | 850,000              | **558,394**           |
+| **`addReport` (Warm)**   | 23,893                     | 32,440               | **137,902***          |
+| **`getReport`**          | 5,500                      | 8,200                | **18,500**            |
 
 ***Note on Gas Optimization:** The V5.0 gas cost includes the "Security Tax" required for 3-Factor Authentication (HTS Token + Whitelist + RBAC), ensuring medical-grade data integrity.*
 
 ### 🏛️ Architectural Pivot: Proxy to Standard Implementation
 
 > **Decision:** Deprecated the *Initializable Proxy* pattern in favor of the **V5.0 Hardened Standard** implementation.
-> **Rationale:** > * **Data Integrity:** Eliminated the risk of "Storage Collision" in a high-stakes medical registry.
+> **Rationale:**
+> * **Data Integrity:** Eliminated the risk of "Storage Collision" in a high-stakes medical registry.
 > * **Reliability:** Standard contracts provide a direct, immutable ABI for the AI Agent.
 > * **Security Reinvestment:** Saved gas from proxy overhead was reinvested into the mandatory **HTS Badge Token balance check**.
 > 
@@ -204,7 +205,7 @@ The contract is verified on **Sourcify** with a **100% Runtime Bytecode Match**.
 
 ```bash
 # Clone and Build
-git clone https://github.com/[YourUsername]/Lab-Registry-Hedera-Apex
+git clone https://github.com/Crimson-Ox/Lab-Registry-Hedera-Apex
 cd Lab-Registry-Hedera-Apex
 forge install openzeppelin/openzeppelin-contracts
 forge build
@@ -216,10 +217,33 @@ forge test -vv --match-test testUnauthorizedAnchor
 
 ---
 
-## 🚀 Future Roadmap
+## 🏥 Clinical Field Validation (Case Study)
 
-* **The Lab Factory:** Deploying departmental clones (Virology, Oncology) with isolated HTS-gated storage.
-* **Health Data NFTs:** Tokenizing results as unique HTS NFTs, giving patients true ownership and "burn" capabilities.
+> [!NOTE]
+> **Primary Research Phase: UBTH Field Insights**
+> We are currently integrating workflow feedback from clinical staff at the **University of Benin Teaching Hospital (UBTH)**. This research focuses on solving "Transcription Drift" in high-frequency ward environments.
+> *Status: Verification in progress. Narrative placeholders will be updated upon final clinical review.*
+
+---
+
+## 🚀 Future Roadmap: Scaling Scientific Trust
+
+* **📱 Milestone 1: Ward-Ready Mobile Ecosystem**
+* Transitioning the current dashboard into a high-performance mobile dApp. This includes a "Tap-to-Verify" interface for doctors to sign diagnostic anchors using biometric authentication on the move.
+
+
+* **🎫 Milestone 2: Patient-Owned HTS NFTs (Data Sovereignty)**
+* Tokenizing results as unique HTS NFTs, giving patients true ownership and the ability to "burn" or revoke access to their record, ensuring full GDPR/HIPAA compliance.
+
+
+* **🧬 Milestone 3: The "Lab Factory" Pattern**
+* Implementation of a factory contract to deploy departmental clones (Virology, Oncology) with isolated HTS-gated storage.
+
+
+* **🛡️ Milestone 4: Decentralized Identity (DID) Integration**
+* Phasing out traditional passwords for **Sign-In with Web3 (SIWE)**. Users will authenticate sessions by signing a unique nonce with their wallet, eliminating credential theft risks.
+
+
 
 ---
 
@@ -231,3 +255,5 @@ forge test -vv --match-test testUnauthorizedAnchor
 ---
 
 **Verified on Hedera Testnet | aBFT Secured | 2026 Crimson Spiral Team**
+
+---
