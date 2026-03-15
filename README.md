@@ -17,9 +17,9 @@
 ## 🔗 Live Access & Media
 
 > [!IMPORTANT]
-> **Project URL:** [https://lab-registry-hedera-apex.vercel.app/](https://lab-registry-hedera-apex.vercel.app/)
+> **Project URL:** [https://lab-registry-hedera-apex.vercel.app/]
 > **Technical Demo Video:** [YouTube/Loom Link here]
-> **Storage Layer:** [https://gateway.pinata.cloud/ipfs/QmPht6tBEVAk7Usz4XediZCJnnrCXxNWWYx3agCNX8zWR](https://www.google.com/search?q=https://gateway.pinata.cloud/ipfs/QmPht6tBEVAk7Usz4XediZCJnnrCXxNWWYx3agCNX8zWR)
+> **Storage Layer:** [https://gateway.pinata.cloud/ipfs/QmPht6tBEVAk7Usz4XediZCJnnrCXxNWWYx3agCNX8zWR]
 
 ---
 
