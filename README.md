@@ -225,7 +225,7 @@ forge test -vv --match-test testUnauthorizedAnchor
 
 ## 👥 The Development Team
 
-* **Liasandeen Ikienu ([Crimson_Ox](https://www.google.com/search?q=https://github.com/Crimson-Ox)) — Project Lead & Full-Stack Architect:** Executed the end-to-end architecture, core Solidity development, life-science research alignment, and the conceptual logic flow of the bridge.
+* **Liasandeen Ikienu ([Crimson-Ox](https://www.google.com/search?q=https://github.com/Crimson-Ox)) — Project Lead & Full-Stack Architect:** Executed the end-to-end architecture, core Solidity development, life-science research alignment, and the conceptual logic flow of the bridge.
 * **Anikesh Kumar ([uzumaki-ak](https://www.google.com/search?q=https://github.com/uzumaki-ak)) — AI Strategy & Lead Frontend Developer:** Focused on AI model selection, React dashboard implementation, Dual-Signature logic, and Pinata/IPFS storage architecture.
 
 ---
