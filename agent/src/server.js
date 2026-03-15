@@ -25,7 +25,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const PORT = process.env.AGENT_API_PORT || 4000;
+const PORT = process.env.PORT || process.env.AGENT_API_PORT || 4000;
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
