@@ -243,7 +243,8 @@ forge test -vv --match-test testUnauthorizedAnchor
 * **🛡️ Milestone 4: Decentralized Identity (DID) Integration**
 * Phasing out traditional passwords for **Sign-In with Web3 (SIWE)**. Users will authenticate sessions by signing a unique nonce with their wallet, eliminating credential theft risks.
 
-* **🛡️ Milestone 5: Transitioning to Pinata Dedicated Gateways for sub-second diagnostic retrieval
+* **🛡️ Milestone 5:**
+* Transitioning to Pinata Dedicated Gateways for sub-second diagnostic retrieval
 
 ---
 
