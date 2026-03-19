@@ -219,10 +219,23 @@ forge test -vv --match-test testUnauthorizedAnchor
 
 ## 🏥 Clinical Field Validation (Case Study)
 
-> [!NOTE]
-> **Primary Research Phase: UBTH Field Insights**
-> We are currently integrating workflow feedback from clinical staff at the **University of Benin Teaching Hospital (UBTH)**. This research focuses on solving "Transcription Drift" in high-frequency ward environments.
-> *Status: Verification in progress. Narrative placeholders will be updated upon final clinical review.*
+### **Clinical Field Validation (Case Study): The UBTH Provenance Audit**
+**Primary Research Phase: UBTH Field Insights** Smart Lab Registry isn't just code; it’s a response to the "Stress of Uncertainty" in the ward. Through direct consultation with clinical staff at the **University of Benin Teaching Hospital (UBTH)**, we identified that the deadliest gap in microbiology isn't the science—it's the **Transcription Drift.**
+
+#### **The Core Discovery: Beyond "Hard" Immutability**
+Our field research revealed a critical friction point: **Clinical Rigidity.** In a high-frequency ward, errors in sample labeling, machine calibration, and manual transcription are inevitable. A blockchain that "locks" an error permanently is a clinical liability.
+
+#### **The Solution: Accountable Evolution**
+Based on these insights, we evolved the Crimson Spiral protocol from a static ledger to a **Versioned Metadata Chain.**
+* **The "Correction Event":** When a discrepancy is found (e.g., a mislabeled pathogen), the protocol allows for a **Signed Rectification.** * **The Audit Trail:** We don't overwrite history. We anchor a **V2 Metadata Pointer** on Hedera that cryptographically references the original V1 "Mistake."
+* **Provider Protection:** This "Linked-List of Truth" protects healthcare workers by proving that adjustments were documented medical corrections, not unauthorized data tampering.
+
+#### **The Result: A "Self-Healing" Registry**
+By bridging the speed of **Hedera aBFT** with the reality of the **UBTH Ward**, we have moved from "Static Records" to **"Accountable Clinical Histories."** We have replaced the manual vulnerability of the "Last Mile" with a system that is secure enough to be trusted, but human enough to be practical.
+
+> *"Systems that improve traceability and ensure accountability are always valuable for patient safety. A balanced system—secure, but allowing for controlled corrections—is the most practical approach for a facility like ours."* > — **Clinical Feedback, UBTH Nursing Staff.**
+
+
 
 ---
 
