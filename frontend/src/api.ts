@@ -65,6 +65,7 @@ export interface LabAuditRow {
   tx_id: string | null;
   status: string | null;
   verified_by: string | null;
+  rejection_reason: string | null;
   created_at: string;
 }
 
