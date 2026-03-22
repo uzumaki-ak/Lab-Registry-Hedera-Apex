@@ -241,8 +241,22 @@ export const AIDiagnostics: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="upload-zone" onClick={() => fileInputRef.current?.click()}>
-              <p>No active session. <strong>Click to bulk upload CSV</strong></p>
+            <div 
+              className="upload-zone" 
+              onClick={() => fileInputRef.current?.click()}
+              style={{ 
+                border: '2px dashed #cbd5e1', 
+                borderRadius: '12px', 
+                padding: '2.5rem', 
+                textAlign: 'center', 
+                cursor: 'pointer',
+                background: 'rgba(37, 99, 235, 0.05)',
+                margin: '1rem 0'
+              }}
+            >
+              <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📁</div>
+              <p style={{ fontWeight: 600, color: 'var(--text-main)', marginBottom: '0.5rem' }}>Click here to Bulk Upload CSV</p>
+              <p className="small" style={{ color: 'var(--text-sub)' }}>Format: ID, Name, EVM, Test, Result</p>
               <input type="file" accept=".csv" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileUpload} />
             </div>
           )}

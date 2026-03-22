@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/runner.js",
     "dev": "node src/runner.js",
-    "api": "node src/server.js"
+    "api": "node src/server.js",
+    "build": "node --check src/server.js"
   },
   "dependencies": {
     "@hashgraph/sdk": "^2.53.0",

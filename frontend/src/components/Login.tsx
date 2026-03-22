@@ -278,30 +278,31 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   required
                 />
                 <div style={{ position: 'relative' }}>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
                   <button 
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     style={{ 
                       position: 'absolute', 
-                      right: '10px', 
+                      left: '10px', 
                       top: '50%', 
                       transform: 'translateY(-50%)',
                       background: 'none',
                       border: 'none',
                       cursor: 'pointer',
                       fontSize: '1.2rem',
-                      padding: '5px'
+                      zIndex: 10
                     }}
                   >
                     {showPassword ? "👁️" : "👁️‍🗨️"}
                   </button>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    style={{ paddingLeft: '40px' }}
+                  />
                 </div>
               </>
             )}
