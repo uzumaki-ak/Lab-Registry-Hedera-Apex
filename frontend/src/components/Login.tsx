@@ -50,7 +50,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
     try {
       if (role === "patient") {
         // Patient PIN Login
-        const { data: preReg, error: preRegError } = await supabase!
+        const { data: preReg, error: preRegError } = await (supabase as any)
           .from("hospital_pre_reg")
           .select("*")
           .eq("phone", phone)
@@ -73,7 +73,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
         onLogin(user);
       } else {
         // Staff/Admin Email Login
-        const { data, error: rpcError } = await supabase!.rpc("auth_app_user", {
+        const { data, error: rpcError } = await (supabase as any).rpc("auth_app_user", {
           p_email: email.trim(),
           p_password: password,
         });
@@ -116,9 +116,8 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
     setError("");
     setLoading(true);
     try {
-      // --- STEP 1: THE GATEKEEPER CHECK ---
       if (role === 'patient') {
-        const { data: preReg, error: preRegError } = await supabase!
+        const { data: preReg, error: preRegError } = await (supabase as any)
           .from('hospital_pre_reg').select('*')
           .eq('phone', phone).eq('default_pin', pin).single();
 
@@ -129,8 +128,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
         }
       } 
       else {
-        // Staff validation requires an authorized_staff_emails table
-        const { data: staffAuth, error: staffError } = await supabase!
+        const { data: staffAuth, error: staffError } = await (supabase as any)
           .from('authorized_staff_emails').select('*')
           .eq('email', email.trim()).eq('role', role).single();
 
@@ -141,9 +139,8 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
         }
       }
 
-      // --- STEP 2: ACCOUNT CREATION ---
-      const { error: authError } = await supabase!.auth.signUp({
-        email: email.trim() || `${phone}@hospital.com`, // Email for staff, fake email for phone patients
+      const { error: authError } = await (supabase as any).auth.signUp({
+        email: email.trim() || `${phone}@hospital.com`,
         password: password,
         options: {
           data: { role: role, full_name: fullName }
@@ -156,9 +153,8 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
         return;
       }
 
-      // --- STEP 3: ACTIVATE PATIENT ---
       if (role === 'patient') {
-        await supabase!.from('hospital_pre_reg').update({ is_activated: true }).eq('phone', phone);
+        await (supabase as any).from('hospital_pre_reg').update({ is_activated: true }).eq('phone', phone);
       }
 
       alert("🎉 Account Created! You can now Sign In.");
@@ -238,12 +234,12 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
             )}
 
             <div className="input-group" style={{ position: 'relative', marginTop: '15px' }}>
-              <span
+              <span 
                 onClick={() => setShowPassword(!showPassword)}
-                style={{
-                  position: 'absolute',
-                  left: '12px',
-                  top: '50%',
+                style={{ 
+                  position: 'absolute', 
+                  left: '12px', 
+                  top: '50%', 
                   transform: 'translateY(-50%)',
                   cursor: 'pointer',
                   fontSize: '1.2rem',
@@ -265,7 +261,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
             </div>
 
             {error && <p className="error" style={{ margin: '15px 0', color: 'red', textAlign: 'center' }}>{error}</p>}
-
+            
             <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%', padding: '12px', marginTop: '15px' }}>
               {loading ? "Creating Account…" : "Register"}
             </button>
@@ -276,8 +272,8 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
         ) : (
           <form onSubmit={handleSubmit}>
             <div className="input-group">
-              <select
-                value={role}
+              <select 
+                value={role} 
                 onChange={(e) => setRole(e.target.value as UserRole)}
                 style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)' }}
               >
@@ -301,12 +297,12 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
             </div>
 
             <div className="input-group" style={{ position: 'relative', marginTop: '15px' }}>
-              <span
+              <span 
                 onClick={() => setShowPassword(!showPassword)}
-                style={{
-                  position: 'absolute',
-                  left: '12px',
-                  top: '50%',
+                style={{ 
+                  position: 'absolute', 
+                  left: '12px', 
+                  top: '50%', 
                   transform: 'translateY(-50%)',
                   cursor: 'pointer',
                   fontSize: '1.2rem',
@@ -338,7 +334,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
             </button>
           </form>
         )}
-
+        
         {!isSignup && (
           <div style={{ marginTop: '2rem', fontSize: '0.85rem', color: '#666', textAlign: 'center', background: '#f8f9fa', padding: '10px', borderRadius: '8px' }}>
             <p style={{ marginBottom: '5px' }}>🔑 <strong>Staff Pass:</strong> demo@lab.local / 123456</p>
