@@ -8,12 +8,15 @@ import { ChatAgent } from "./components/ChatAgent";
 import { Landing } from "./components/Landing";
 import { AIDiagnostics } from "./components/AIDiagnostics";
 import { Login, getStoredUser, clearStoredUser, type User } from "./components/Login";
+import { VerifyQueue } from "./components/VerifyQueue";
+import { Governance } from "./components/Governance";
+import { Treasury } from "./components/Treasury";
 
-type NavKey = "dashboard" | "ai-diagnostics" | "audit" | "chat" | "landing";
+type NavKey = "dashboard" | "ai-diagnostics" | "audit" | "chat" | "landing" | "verify-queue" | "governance" | "treasury";
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [nav, setNav] = useState<NavKey>("dashboard");
+  const [nav, setNav] = useState<NavKey>("landing");
 
   useEffect(() => {
     const stored = getStoredUser();
@@ -30,11 +33,25 @@ const App: React.FC = () => {
   }
 
   let content: React.ReactNode = null;
-  if (nav === "dashboard") content = <Dashboard />;
-  else if (nav === "ai-diagnostics" && user.role === "admin") content = <AIDiagnostics />;
-  else if (nav === "audit") content = <AuditTrail user={user} />;
-  else if (nav === "chat") content = <ChatAgent />;
-  else content = <Landing />;
+  const role = user.role;
+
+  if (nav === "dashboard" && ['director', 'admin'].includes(role)) {
+    content = <Dashboard />;
+  } else if (nav === "ai-diagnostics" && ['technician', 'medical_officer', 'director', 'admin'].includes(role)) {
+    content = <AIDiagnostics />;
+  } else if (nav === "audit" && ['patient', 'medical_officer', 'director', 'admin'].includes(role)) {
+    content = <AuditTrail user={user} />;
+  } else if (nav === "verify-queue" && ['medical_officer', 'director', 'admin'].includes(role)) {
+    content = <VerifyQueue />;
+  } else if (nav === "governance" && ['director', 'admin'].includes(role)) {
+    content = <Governance />;
+  } else if (nav === "treasury" && ['director', 'admin'].includes(role)) {
+    content = <Treasury />;
+  } else if (nav === "chat") {
+    content = <ChatAgent />;
+  } else {
+    content = <Landing />;
+  }
 
   return (
     <Layout user={user} onLogout={handleLogout} current={nav} onChange={setNav}>
