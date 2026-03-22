@@ -10,7 +10,7 @@ const MIRROR_NODE_URL =
 
 const LAB_REGISTRY_CONTRACT_ID =
   (import.meta.env.VITE_LAB_REGISTRY_CONTRACT_ID as string | undefined) ||
-  "0.0.8221212";
+  "0.0.8321102"; // UPDATED FROM 8221212
 
 export async function executeAgent(
   payload: LabReportInput
@@ -174,5 +174,17 @@ export async function setAnchorFee(fee: number) {
 export async function fetchTreasuryStats() {
   const response = await fetch(`${AGENT_API_URL}/api/treasury-stats`);
   if (!response.ok) throw new Error("Failed to fetch treasury stats");
+  return response.json();
+}
+export async function requestDataTransfer(id: number) {
+  const response = await fetch(`${AGENT_API_URL}/api/request-transfer`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id }),
+  });
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "Failed to initiate data portability handshake");
+  }
   return response.json();
 }
