@@ -34,7 +34,9 @@ export const ChatAgent: React.FC = () => {
 
     try {
       setLoading(true);
-      const labContext = await fetchLabAudit();
+      const user = await import("./Login").then(m => m.getStoredUser());
+      const filter = user?.role === "patient" ? user.patient_evm : undefined;
+      const labContext = await fetchLabAudit(filter);
       const answer = await chatWithAgent(trimmed, labContext);
       pushMessage("agent", answer);
     } catch (err: any) {
