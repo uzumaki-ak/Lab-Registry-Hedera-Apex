@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
 
-:root[data-theme="light"] {
+:root {
+  /* Default Light Theme */
   --bg-color: #f7f9fc;
   --bg-card: #ffffff;
   --text-main: #0f172a;
@@ -143,6 +144,7 @@ body {
   padding: 0.875rem;
   border-radius: 8px;
   border: 1px solid rgba(0,0,0,0.1);
+  background: #2563eb; /* Fallback Blue */
   background: var(--btn-primary);
   color: #ffffff !important;
   font-weight: 600;
