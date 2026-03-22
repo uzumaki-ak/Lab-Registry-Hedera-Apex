@@ -175,25 +175,27 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
         </header>
 
         {isSignup ? (
-          <form onSubmit={handleSignUp}>
-            <div className="input-group">
-              <select value={role} onChange={(e) => setRole(e.target.value as UserRole)} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                <option value="patient">Register as Patient (Web2)</option>
-                <option value="technician">Register as Staff (Technician)</option>
-                <option value="medical_officer">Register as Staff (Officer)</option>
-                <option value="director">Register as Staff (Director)</option>
-              </select>
-            </div>
+          <form onSubmit={handleSignUp} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <select 
+              value={role} 
+              onChange={(e) => setRole(e.target.value as UserRole)} 
+              style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', margin: 0 }}
+            >
+              <option value="patient">Register as Patient (Web2)</option>
+              <option value="technician">Register as Staff (Technician)</option>
+              <option value="medical_officer">Register as Staff (Officer)</option>
+              <option value="director">Register as Staff (Director)</option>
+            </select>
 
             {role === "patient" ? (
-              <div className="input-group" style={{ marginTop: '15px' }}>
+              <>
                 <input
                   type="text"
                   placeholder="Full Name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
-                  style={{ width: '100%', padding: '12px' }}
+                  style={{ width: '100%', padding: '12px', margin: 0, borderRadius: '8px', border: '1px solid var(--border-color)' }}
                 />
                 <input
                   type="text"
@@ -201,26 +203,34 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   required
-                  style={{ width: '100%', padding: '12px', marginTop: '10px' }}
+                  style={{ width: '100%', padding: '12px', margin: 0, borderRadius: '8px', border: '1px solid var(--border-color)' }}
                 />
-                <input
-                  type="password"
-                  placeholder="Hospital PIN (6 digits)"
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value)}
-                  required
-                  style={{ width: '100%', padding: '12px', marginTop: '10px' }}
-                />
-              </div>
+                <div style={{ display: 'flex', alignItems: 'center', width: '100%', border: '1px solid var(--border-color)', borderRadius: '8px', background: 'var(--bg-card)' }}>
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ padding: '0 12px', cursor: 'pointer', fontSize: '1.2rem', opacity: 0.7, userSelect: 'none', display: 'flex', alignItems: 'center' }}
+                  >
+                    {showPassword ? "👁️" : "👁️‍🗨️"}
+                  </span>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Hospital PIN (6 digits)"
+                    value={pin}
+                    onChange={(e) => setPin(e.target.value)}
+                    required
+                    style={{ flex: 1, padding: '12px 12px 12px 0', margin: 0, border: 'none', outline: 'none', background: 'transparent' }}
+                  />
+                </div>
+              </>
             ) : (
-              <div className="input-group" style={{ marginTop: '15px' }}>
+              <>
                 <input
                   type="text"
                   placeholder="Full Name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
-                  style={{ width: '100%', padding: '12px' }}
+                  style={{ width: '100%', padding: '12px', margin: 0, borderRadius: '8px', border: '1px solid var(--border-color)' }}
                 />
                 <input
                   type="email"
@@ -228,88 +238,67 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  style={{ width: '100%', padding: '12px', marginTop: '10px' }}
+                  style={{ width: '100%', padding: '12px', margin: 0, borderRadius: '8px', border: '1px solid var(--border-color)' }}
+                />
+              </>
+            )}
+
+            {/* This password wrapper is for Staff Sign Up */}
+            {role !== "patient" && (
+              <div style={{ display: 'flex', alignItems: 'center', width: '100%', border: '1px solid var(--border-color)', borderRadius: '8px', background: 'var(--bg-card)' }}>
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{ padding: '0 12px', cursor: 'pointer', fontSize: '1.2rem', opacity: 0.7, userSelect: 'none', display: 'flex', alignItems: 'center' }}
+                >
+                  {showPassword ? "👁️" : "👁️‍🗨️"}
+                </span>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Set Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  style={{ flex: 1, padding: '12px 12px 12px 0', margin: 0, border: 'none', outline: 'none', background: 'transparent' }}
                 />
               </div>
             )}
 
-            <div className="input-group" style={{ position: 'relative', marginTop: '15px' }}>
-              <span 
-                onClick={() => setShowPassword(!showPassword)}
-                style={{ 
-                  position: 'absolute', 
-                  left: '12px', 
-                  top: '50%', 
-                  transform: 'translateY(-50%)',
-                  cursor: 'pointer',
-                  fontSize: '1.2rem',
-                  zIndex: 10,
-                  opacity: 0.7,
-                  userSelect: 'none'
-                }}
-              >
-                {showPassword ? "👁️" : "👁️‍🗨️"}
-              </span>
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Set Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                style={{ paddingLeft: '45px', width: '100%', paddingRight: '12px', paddingTop: '12px', paddingBottom: '12px' }}
-              />
-            </div>
-
-            {error && <p className="error" style={{ margin: '15px 0', color: 'red', textAlign: 'center' }}>{error}</p>}
+            {error && <p className="error" style={{ margin: 0, color: 'red', textAlign: 'center' }}>{error}</p>}
             
-            <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%', padding: '12px', marginTop: '15px' }}>
+            <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%', padding: '12px', margin: 0 }}>
               {loading ? "Creating Account…" : "Register"}
             </button>
-            <button className="btn btn-outline" type="button" onClick={() => setIsSignup(false)} style={{ width: '100%', padding: '12px', marginTop: '12px' }}>
+            <button className="btn btn-outline" type="button" onClick={() => setIsSignup(false)} style={{ width: '100%', padding: '12px', margin: 0 }}>
               Back to Sign In
             </button>
           </form>
         ) : (
-          <form onSubmit={handleSubmit}>
-            <div className="input-group">
-              <select 
-                value={role} 
-                onChange={(e) => setRole(e.target.value as UserRole)}
-                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)' }}
-              >
-                <option value="patient">Login as Patient (Web2)</option>
-                <option value="technician">Login as Staff (Technician)</option>
-                <option value="medical_officer">Login as Staff (Officer)</option>
-                <option value="director">Login as Staff (Director)</option>
-                <option value="admin">Login as Admin (Legacy)</option>
-              </select>
-            </div>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <select 
+              value={role} 
+              onChange={(e) => setRole(e.target.value as UserRole)}
+              style={{ width: '100%', padding: '12px', margin: 0, borderRadius: '8px', border: '1px solid var(--border-color)' }}
+            >
+              <option value="patient">Login as Patient (Web2)</option>
+              <option value="technician">Login as Staff (Technician)</option>
+              <option value="medical_officer">Login as Staff (Officer)</option>
+              <option value="director">Login as Staff (Director)</option>
+              <option value="admin">Login as Admin (Legacy)</option>
+            </select>
 
-            <div className="input-group" style={{ marginTop: '15px' }}>
-              <input
-                type="text"
-                placeholder={role === "patient" ? "Phone Number" : "Email"}
-                value={role === "patient" ? phone : email}
-                onChange={(e) => role === "patient" ? setPhone(e.target.value) : setEmail(e.target.value)}
-                required
-                style={{ width: '100%', padding: '12px' }}
-              />
-            </div>
+            <input
+              type="text"
+              placeholder={role === "patient" ? "Phone Number" : "Email"}
+              value={role === "patient" ? phone : email}
+              onChange={(e) => role === "patient" ? setPhone(e.target.value) : setEmail(e.target.value)}
+              required
+              style={{ width: '100%', padding: '12px', margin: 0, borderRadius: '8px', border: '1px solid var(--border-color)' }}
+            />
 
-            <div className="input-group" style={{ position: 'relative', marginTop: '15px' }}>
-              <span 
+            <div style={{ display: 'flex', alignItems: 'center', width: '100%', border: '1px solid var(--border-color)', borderRadius: '8px', background: 'var(--bg-card)' }}>
+              <span
                 onClick={() => setShowPassword(!showPassword)}
-                style={{ 
-                  position: 'absolute', 
-                  left: '12px', 
-                  top: '50%', 
-                  transform: 'translateY(-50%)',
-                  cursor: 'pointer',
-                  fontSize: '1.2rem',
-                  zIndex: 10,
-                  opacity: 0.7,
-                  userSelect: 'none'
-                }}
+                style={{ padding: '0 12px', cursor: 'pointer', fontSize: '1.2rem', opacity: 0.7, userSelect: 'none', display: 'flex', alignItems: 'center' }}
               >
                 {showPassword ? "👁️" : "👁️‍🗨️"}
               </span>
@@ -319,17 +308,17 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
                 value={role === "patient" ? pin : password}
                 onChange={(e) => role === "patient" ? setPin(e.target.value) : setPassword(e.target.value)}
                 required
-                style={{ paddingLeft: '45px', width: '100%', paddingRight: '12px', paddingTop: '12px', paddingBottom: '12px' }}
+                style={{ flex: 1, padding: '12px 12px 12px 0', margin: 0, border: 'none', outline: 'none', background: 'transparent' }}
               />
             </div>
 
-            {error && <p className="error" style={{ margin: '15px 0', color: 'red', textAlign: 'center' }}>{error}</p>}
+            {error && <p className="error" style={{ margin: 0, color: 'red', textAlign: 'center' }}>{error}</p>}
 
-            <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%', padding: '12px', marginTop: '15px' }}>
+            <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%', padding: '12px', margin: 0 }}>
               {loading ? "Authenticating..." : "Sign In"}
             </button>
 
-            <button className="btn btn-outline" type="button" onClick={() => setIsSignup(true)} style={{ width: '100%', padding: '12px', marginTop: '12px' }}>
+            <button className="btn btn-outline" type="button" onClick={() => setIsSignup(true)} style={{ width: '100%', padding: '12px', margin: 0 }}>
               Don't have an account? Sign Up
             </button>
           </form>
