@@ -69,14 +69,21 @@ export interface LabAuditRow {
   created_at: string;
 }
 
-export async function fetchLabAudit() {
+export async function fetchLabAudit(patientEvm?: string) {
   const { supabase } = await import("./supabaseClient");
   if (!supabase) return [];
-  const { data, error } = await supabase
+  
+  let query = supabase
     .from("lab_audit")
     .select("*")
     .order("created_at", { ascending: false })
     .limit(50);
+
+  if (patientEvm) {
+    query = query.eq("patient_evm", patientEvm);
+  }
+
+  const { data, error } = await query;
   if (error) throw new Error(error.message);
   return (data ?? []) as LabAuditRow[];
 }

@@ -154,7 +154,7 @@ app.post("/api/reject-report", async (req, res) => {
       .update({ 
         status: "REJECTED", 
         verified_by: process.env.HEDERA_OPERATOR_ID,
-        rejection_reason: reason -- Note: Ensure this column is added if not there, or use a field
+        rejection_reason: reason // Note: Ensure this column is added if not there, or use a field
       })
       .eq("report_id", String(id));
 

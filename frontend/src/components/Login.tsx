@@ -7,6 +7,7 @@ export interface User {
   email: string;
   role: UserRole;
   full_name?: string;
+  patient_evm?: string;
 }
 
 const AUTH_KEY = "lab-registry-auth";
@@ -44,44 +45,60 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!email.trim()) {
-      setError("Enter your email");
-      return;
-    }
-    if (!password) {
-      setError("Enter your password");
-      return;
-    }
-    if (!supabase) {
-      setError("Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.");
-      return;
-    }
     setLoading(true);
     try {
-      // V5.1 Signup Logic (as per blueprint)
-      // Note: This logic is for the SIGN UP page, while this component is currently LOGIN.
-      // I will update the login RPC call to handle the new roles.
-      const { data, error: rpcError } = await supabase.rpc("auth_app_user", {
-        p_email: email.trim(),
-        p_password: password,
-      });
-      if (rpcError) {
-        setError(rpcError.message || "Sign in failed");
-        return;
+      if (role === "patient") {
+        // Patient PIN Login
+        const { data: preReg, error: preRegError } = await supabase!
+          .from("hospital_pre_reg")
+          .select("*")
+          .eq("phone", phone)
+          .eq("default_pin", pin)
+          .single();
+
+        if (preRegError || !preReg) {
+          setError("Invalid Phone Number or PIN");
+          setLoading(false);
+          return;
+        }
+
+        const user: User = {
+          email: `${phone}@hospital.com`, // Virtual email for patient session
+          role: "patient",
+          full_name: preReg.patient_name || "Patient",
+          patient_evm: preReg.patient_evm || undefined,
+        };
+        setStoredUser(user);
+        onLogin(user);
+      } else {
+        // Staff/Admin Email Login
+        const { data, error: rpcError } = await supabase!.rpc("auth_app_user", {
+          p_email: email.trim(),
+          p_password: password,
+        });
+
+        if (rpcError) {
+          setError(rpcError.message || "Sign in failed");
+          setLoading(false);
+          return;
+        }
+
+        const row = Array.isArray(data) ? data[0] : data;
+        if (!row || !row.email) {
+          setError("Invalid email or password");
+          setLoading(false);
+          return;
+        }
+
+        const user: User = {
+          email: row.email,
+          role: row.role as UserRole,
+        };
+        setStoredUser(user);
+        onLogin(user);
       }
-      const row = Array.isArray(data) ? data[0] : data;
-      if (!row || !row.email) {
-        setError("Invalid email or password");
-        return;
-      }
-      const user: User = {
-        email: row.email,
-        role: row.role as UserRole,
-      };
-      setStoredUser(user);
-      onLogin(user);
     } catch {
-      setError("Invalid email or password");
+      setError("Invalid credentials");
     } finally {
       setLoading(false);
     }
@@ -221,23 +238,60 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
           </form>
         ) : (
           <form onSubmit={handleSubmit}>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <select 
+              value={role} 
+              onChange={(e) => setRole(e.target.value as UserRole)} 
+              style={{ marginBottom: '1rem', width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}
+            >
+              <option value="patient">Login as Patient</option>
+              <option value="technician">Login as Staff (Technician)</option>
+              <option value="medical_officer">Login as Staff (Officer)</option>
+              <option value="director">Login as Staff (Director)</option>
+              <option value="admin">Login as Admin (Legacy)</option>
+            </select>
+
+            {role === 'patient' ? (
+              <>
+                <input
+                  type="text"
+                  placeholder="Phone Number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+                <input
+                  type="password"
+                  placeholder="Hospital PIN"
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value)}
+                  required
+                />
+              </>
+            ) : (
+              <>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </>
+            )}
+
             {error && (
               <p className="error" style={{ marginBottom: "0.75rem" }}>
                 {error}
               </p>
             )}
+            
             <button type="submit" disabled={loading}>
               {loading ? "Signing in…" : "Sign in"}
             </button>

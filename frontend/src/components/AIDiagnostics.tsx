@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import type { LabReportInput } from "../types";
 import { executeAgent, insertLabAudit, hederaTxUrl, fetchLabAudit, type LabAuditRow } from "../api";
+import { supabase } from "../supabaseClient";
 
 interface Toast {
   id: number;
@@ -51,13 +52,31 @@ export const AIDiagnostics: React.FC = () => {
 
   const processRecord = async (data: LabReportInput) => {
     pushToast(`Processing report ${data.id}...`, "info");
+    
+    // --- V5.1 AUTO-LINKING LOGIC ---
+    // If no address is given, try to find the patient in the Pre-Reg table by name
+    let finalAddress = data.patientAddress;
+    if (!finalAddress && data.patientName) {
+      const { data: match } = await supabase!
+        .from('hospital_pre_reg')
+        .select('patient_evm')
+        .ilike('patient_name', `%${data.patientName}%`)
+        .limit(1)
+        .single();
+      
+      if (match?.patient_evm) {
+        finalAddress = match.patient_evm;
+        pushToast(`Linked to registered patient: ${data.patientName}`, "success");
+      }
+    }
+
     const result = await executeAgent(data);
     const tx = result.hedera.transactionId ?? null;
     const ipfsCID = result.ipfsCID ?? null;
     
     const row = {
       report_id: String(data.id),
-      patient_evm: data.patientAddress,
+      patient_evm: finalAddress,
       patient_name: data.patientName,
       test_name: data.testName,
       result_value: String(data.resultValue),

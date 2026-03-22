@@ -8,7 +8,8 @@ export const Dashboard: React.FC = () => {
   const isPatient = user?.role === "patient";
 
   const refreshRecent = () => {
-    fetchLabAudit().then(setRecentReports).catch(() => {});
+    const filter = user?.role === "patient" ? user.patient_evm : undefined;
+    fetchLabAudit(filter).then(setRecentReports).catch(() => {});
   };
   useEffect(() => {
     refreshRecent();

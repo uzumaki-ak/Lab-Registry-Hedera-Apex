@@ -32,7 +32,8 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ user }) => {
     try {
       setLoading(true);
       setError(null);
-      const data = await fetchLabAudit();
+      const filter = user.role === "patient" ? user.patient_evm : undefined;
+      const data = await fetchLabAudit(filter);
       setRows(data);
     } catch (err: any) {
       console.error(err);
@@ -113,7 +114,9 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ user }) => {
                   >
                     <td>{r.report_id ?? "—"}</td>
                     <td style={{ fontWeight: 500, color: "var(--text-main)" }}>
-                      {user.role === "admin" ? (r.patient_name || "(Anonymous)") : "(Hidden for Privacy)"}
+                      {(user.role === "admin" || (user.role === "patient" && r.patient_evm === user.patient_evm)) 
+                        ? (r.patient_name || "(Anonymous)") 
+                        : "(Hidden for Privacy)"}
                     </td>
                     <td>{r.test_name ?? "—"}</td>
                     <td>{r.result_value ?? "—"}</td>
